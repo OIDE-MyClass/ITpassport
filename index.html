@@ -4,126 +4,456 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ITパスポート 合格ナビ2026</title>
+    <!-- Tailwind CSS (デザイン・レイアウト用) -->
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap');
         body {
-            font-family: 'BIZ UDPGothic', 'Meiryo', sans-serif;
-            background-color: #f0f4f8;
+            font-family: 'Noto Sans JP', sans-serif;
+            background-color: #f3f7fa;
+        }
+        /* シンプルで確実なポップアップアニメーション */
+        @keyframes popIn {
+            0% { transform: scale(0.9); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .animate-pop-in {
+            animation: popIn 0.25s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
         }
     </style>
 </head>
 <body class="pb-12 text-gray-800">
 
+    <!-- ヘッダー (試験日までを動的にカウントダウン) -->
     <header class="bg-[#1B365D] text-white text-center py-6 px-4 shadow-md sticky top-0 z-50">
-        <h1 class="text-xl md:text-2xl font-bold tracking-wider">ITパスポート 合格ナビ</h1>
-        <p class="text-xs md:text-sm text-blue-200 mt-1">2026年8月21日(金) 受験応援システム</p>
+        <div class="max-w-6xl mx-auto flex flex-col md:flex-row md:items-center md:justify-between gap-2">
+            <div class="text-left">
+                <h1 class="text-xl md:text-2xl font-bold tracking-wider flex items-center justify-center md:justify-start gap-2">
+                    <span>🌸</span> ITパスポート 合格ナビ 2026
+                </h1>
+                <p class="text-xs md:text-sm text-blue-200 mt-0.5">2026年8月21日(金) 受験予定プラン</p>
+            </div>
+            <div class="bg-blue-900/50 border border-blue-400/30 px-4 py-1.5 rounded-full inline-block mx-auto md:mx-0">
+                <span class="text-xs md:text-sm">本番まであと</span>
+                <span id="countdown-days" class="text-lg md:text-xl font-extrabold text-yellow-300 px-1">--</span>
+                <span class="text-xs md:text-sm">日！</span>
+            </div>
+        </div>
     </header>
 
-    <main class="max-w-6xl mx-auto px-4 mt-6 grid grid-cols-1 md:grid-cols-3 gap-6">
+    <!-- メインレイアウト (PC: 2カラム / スマホ: 1カラム) -->
+    <main class="max-w-6xl mx-auto px-4 mt-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-        <div class="grid grid-cols-1 gap-6 md:col-span-2">
+        <!-- 左・中央カラム (進捗、バッジ、タイムライン) -->
+        <div class="lg:col-span-2 space-y-6">
             
-            <div class="bg-white rounded-2xl p-6 shadow-sm border border-blue-100 transition-all hover:shadow-md">
-                <div class="flex items-center justify-between">
-                    <span class="bg-green-100 text-green-800 text-xs md:text-sm font-bold px-3 py-1 rounded-full">現在実行中</span>
-                    <span class="text-xs md:text-sm text-gray-500">試験まであと約2ヶ月</span>
+            <!-- ① 進捗バー ＆ 今日の勉強完了ボタン -->
+            <div class="bg-white rounded-3xl p-6 shadow-sm border border-blue-50/80 relative overflow-hidden">
+                <div class="absolute -top-10 -right-10 w-32 h-32 bg-blue-50 rounded-full -z-10 opacity-50"></div>
+                
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
+                    <div>
+                        <span class="bg-blue-100 text-blue-800 text-xs font-bold px-3 py-1 rounded-full">現在のフェーズ: インプット期</span>
+                        <h2 class="text-xl font-bold text-[#1B365D] mt-2">目標：毎日1時間コツコツ進めよう！</h2>
+                    </div>
+                    <div class="text-right">
+                        <span class="text-xs text-gray-500 block">トータル進捗</span>
+                        <span id="progress-percent" class="text-2xl font-black text-blue-600">0%</span>
+                    </div>
                 </div>
-                <h2 class="text-lg md:text-xl font-bold mt-2 text-[#1B365D]">【第1期】インプット期</h2>
-                <p class="text-xs md:text-sm text-gray-500 mb-3">期間: 6月8日 〜 7月5日</p>
-                <div class="bg-blue-50 p-4 rounded-xl text-sm md:text-base text-blue-900 border-l-4 border-blue-500">
-                    <strong>今週のミッション：</strong><br>
-                    わからない用語があっても立ち止まらず、参考書をザクザク読み進めよう！
+
+                <!-- プログレスバー -->
+                <div class="w-full bg-gray-100 h-6 rounded-full overflow-hidden p-1 shadow-inner mb-6">
+                    <div id="progress-bar" class="bg-gradient-to-r from-blue-400 to-indigo-600 h-full rounded-full transition-all duration-500 ease-out" style="width: 0%"></div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 items-center">
+                    <div class="text-sm text-gray-600 space-y-1">
+                        <p>📖 現在の学習時間: <span id="study-hours" class="font-bold text-lg text-gray-900">0</span> / 75 時間</p>
+                        <p>🎯 次のバッジ解放まであと: <span id="hours-to-next-badge" class="font-bold text-blue-600">5</span> 時間</p>
+                    </div>
+                    
+                    <!-- 勉強完了トリガーボタン -->
+                    <button onclick="completeStudyHour()" class="relative group bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white font-bold py-3.5 px-6 rounded-2xl shadow-md hover:shadow-lg transition-all duration-200 transform hover:-translate-y-0.5 active:translate-y-0 flex items-center justify-center gap-2 cursor-pointer">
+                        <span class="text-lg">✨</span>
+                        <span>今日の勉強（1時間）を完了！</span>
+                        <span class="absolute -top-1 -right-1 flex h-3 w-3" id="spark-indicator">
+                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-yellow-400 opacity-75"></span>
+                            <span class="relative inline-flex rounded-full h-3 w-3 bg-yellow-500"></span>
+                        </span>
+                    </button>
                 </div>
             </div>
 
-            <div class="bg-white rounded-2xl p-6 shadow-sm transition-all hover:shadow-md">
-                <h3 class="font-bold text-base md:text-lg mb-4 flex items-center text-[#1B365D]">
-                    📅 全体スケジュール
+            <!-- ② デジタルバッジ・スタンプカード -->
+            <div class="bg-white rounded-3xl p-6 shadow-sm border border-blue-50/80">
+                <h3 class="font-bold text-base md:text-lg mb-2 text-[#1B365D] flex items-center gap-2">
+                    🎖️ 合格スタンプカード
+                </h3>
+                <p class="text-xs text-gray-500 mb-6">勉強時間を積み上げて、すべての限定称号バッジをアンロックしよう！</p>
+                
+                <div class="grid grid-cols-2 sm:grid-cols-5 gap-4">
+                    <!-- バッジ1 -->
+                    <div id="badge-1" class="flex flex-col items-center p-3 rounded-2xl border border-gray-100 bg-gray-50/50 transition-all filter grayscale opacity-50">
+                        <div class="text-3xl mb-2">🌱</div>
+                        <span class="text-xs font-bold text-gray-700 text-center">最初の一歩</span>
+                        <span class="text-[10px] text-gray-400 mt-1">1時間達成</span>
+                    </div>
+                    <!-- バッジ2 -->
+                    <div id="badge-5" class="flex flex-col items-center p-3 rounded-2xl border border-gray-100 bg-gray-50/50 transition-all filter grayscale opacity-50">
+                        <div class="text-3xl mb-2">🔥</div>
+                        <span class="text-xs font-bold text-gray-700 text-center">習慣スタート</span>
+                        <span class="text-[10px] text-gray-400 mt-1">5時間達成</span>
+                    </div>
+                    <!-- バッジ3 -->
+                    <div id="badge-15" class="flex flex-col items-center p-3 rounded-2xl border border-gray-100 bg-gray-50/50 transition-all filter grayscale opacity-50">
+                        <div class="text-3xl mb-2">📚</div>
+                        <span class="text-xs font-bold text-gray-700 text-center">インプット完了</span>
+                        <span class="text-[10px] text-gray-400 mt-1">15時間達成</span>
+                    </div>
+                    <!-- バッジ4 -->
+                    <div id="badge-40" class="flex flex-col items-center p-3 rounded-2xl border border-gray-100 bg-gray-50/50 transition-all filter grayscale opacity-50">
+                        <div class="text-3xl mb-2">⚡</div>
+                        <span class="text-xs font-bold text-gray-700 text-center">過去問マスター</span>
+                        <span class="text-[10px] text-gray-400 mt-1">40時間達成</span>
+                    </div>
+                    <!-- バッジ5 -->
+                    <div id="badge-75" class="flex flex-col items-center p-3 rounded-2xl border border-gray-100 bg-gray-50/50 transition-all filter grayscale opacity-50">
+                        <div class="text-3xl mb-2">👑</div>
+                        <span class="text-xs font-bold text-gray-700 text-center">合格圏内！</span>
+                        <span class="text-[10px] text-gray-400 mt-1">75時間達成</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 全体スケジュールタイムライン -->
+            <div class="bg-white rounded-3xl p-6 shadow-sm">
+                <h3 class="font-bold text-base md:text-lg mb-4 flex items-center text-[#1B365D] gap-2">
+                    📅 合格ロードマップ（全体日程）
                 </h3>
                 <div class="space-y-6 relative before:absolute before:inset-0 before:left-3.5 before:bg-blue-100 before:w-0.5 h-auto">
                     
+                    <!-- 第1期 -->
                     <div class="relative pl-8">
                         <div class="absolute left-1 top-1 w-5 h-5 bg-blue-600 rounded-full border-4 border-white shadow"></div>
-                        <h4 class="font-bold text-sm md:text-base text-blue-600">第1期：インプット（6/8〜7/5）</h4>
-                        <p class="text-xs md:text-sm text-gray-600 mt-1">参考書の通読・全体像の把握。まずは1冊最後まで読み切る！</p>
+                        <h4 class="font-bold text-sm md:text-base text-blue-600 flex items-center gap-2">
+                            <span>第1期：インプット（6/8〜7/5）</span>
+                            <span class="bg-blue-100 text-blue-800 text-[10px] font-bold px-2 py-0.5 rounded-full">実行中</span>
+                        </h4>
+                        <p class="text-xs md:text-sm text-gray-600 mt-1">参考書の通読・全体像の把握。わからない単語は付箋を貼って進めてOK！</p>
                     </div>
 
+                    <!-- 第2期 -->
                     <div class="relative pl-8">
                         <div class="absolute left-1 top-1 w-5 h-5 bg-gray-300 rounded-full border-4 border-white shadow"></div>
                         <h4 class="font-bold text-sm md:text-base text-gray-700">第2期：アウトプット（7/6〜8/2）</h4>
-                        <p class="text-xs md:text-sm text-gray-500 mt-1">分野別過去問演習。過去問道場をフル活用して弱点をあぶり出す。</p>
+                        <p class="text-xs md:text-sm text-gray-500 mt-1">分野別過去問演習。過去問道場を徹底活用し、間違えた部分のみ参考書を読み返します。</p>
                     </div>
 
+                    <!-- 第3期 -->
                     <div class="relative pl-8">
                         <div class="absolute left-1 top-1 w-5 h-5 bg-gray-300 rounded-full border-4 border-white shadow"></div>
                         <h4 class="font-bold text-sm md:text-base text-gray-700">第3期：総仕上げ（8/3〜8/20）</h4>
-                        <p class="text-xs md:text-sm text-gray-500 mt-1">本番形式の模擬試験＆CBT疑似ソフト体験。試験前日はしっかり休みましょう！</p>
+                        <p class="text-xs md:text-sm text-gray-500 mt-1">本番形式の模擬試験＆CBT体験ソフト。時間配分を体に叩き込みます！</p>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="md:col-span-1">
-            <div class="bg-white rounded-2xl p-5 shadow-sm flex flex-col h-[450px] md:h-[550px] md:sticky md:top-24 transition-all hover:shadow-md">
-                <h3 class="font-bold text-base md:text-lg mb-2 flex items-center text-[#1B365D]">
-                    💬 先生とLINE風こうかん日記
-                </h3>
-                <p class="text-[11px] md:text-xs text-gray-400 mb-3">今日の勉強報告や、不安なことを呟くと先生が励ましてくれます！</p>
+        <!-- 右カラム (先生と交換日記) -->
+        <div class="lg:col-span-1">
+            <div class="bg-white rounded-3xl p-5 shadow-sm flex flex-col h-[500px] lg:h-[630px] lg:sticky lg:top-24 border border-blue-50/80">
+                <div class="border-b border-gray-100 pb-3 mb-3">
+                    <h3 class="font-bold text-base md:text-lg text-[#1B365D] flex items-center gap-2">
+                        💬 先生とこうかん日記
+                    </h3>
+                    <p class="text-[11px] text-gray-400">日々の勉強報告や悩みを書き込むと、先生がすぐにアドバイスをくれます！</p>
+                </div>
                 
-                <div id="chat-box" class="flex-1 overflow-y-auto space-y-3 p-3 bg-gray-50 rounded-xl text-xs md:text-sm">
+                <!-- チャット表示エリア -->
+                <div id="chat-box" class="flex-1 overflow-y-auto space-y-3 p-3 bg-gray-50 rounded-2xl text-xs md:text-sm">
                     <div class="flex items-start gap-2">
-                        <div class="w-8 h-8 rounded-full bg-blue-900 text-white flex items-center justify-center font-bold text-xs shrink-0">先生</div>
-                        <div class="bg-white p-2.5 rounded-r-xl rounded-bl-xl shadow-xs max-w-[80%]">
-                            お疲れ様です！PCの大画面なら、よりスケジュールが見やすくなりましたね。参考書の読み込みはどこまで進みましたか？気軽に教えてくださいね！
+                        <div class="w-8 h-8 rounded-full bg-blue-950 text-white flex items-center justify-center font-bold text-xs shrink-0 shadow-sm">先生</div>
+                        <div class="bg-white p-3 rounded-r-2xl rounded-bl-2xl shadow-xs max-w-[80%] text-gray-700 leading-relaxed">
+                            お疲れ様です！受験日が8月21日に変更になりましたね。目標がはっきりして素晴らしいスタートを切れています！<br><br>
+                            今日は何時間くらい参考書を読めましたか？勉強が終わったら、上の「勉強を完了！」ボタンか、ここにメッセージを書いて教えてくださいね！
                         </div>
                     </div>
                 </div>
 
+                <!-- 入力フォーム -->
                 <div class="mt-3 flex gap-2">
-                    <input type="text" id="user-input" placeholder="例: ストラテジ系読み終わりました！" class="flex-1 border border-gray-300 rounded-xl px-3 py-2 text-xs md:text-sm focus:outline-none focus:border-blue-500">
-                    <button onclick="sendMessage()" class="bg-[#4682B4] text-white px-4 py-2 rounded-xl font-bold text-xs md:text-sm hover:bg-blue-700 transition shrink-0">送信</button>
+                    <input type="text" id="user-input" placeholder="例: 1章を読み終わりました！" class="flex-1 border border-gray-200 rounded-xl px-3 py-2.5 text-xs md:text-sm focus:outline-none focus:ring-2 focus:ring-blue-400/50 focus:border-blue-500 transition-all bg-gray-50/50">
+                    <button onclick="sendMessage()" class="bg-[#1B365D] hover:bg-blue-900 text-white px-4 py-2.5 rounded-xl font-bold text-xs md:text-sm shadow-sm transition shrink-0 cursor-pointer">
+                        送信
+                    </button>
                 </div>
             </div>
         </div>
 
     </main>
 
+    <!-- お祝いのポップアップスタンプ画面 (背景タップでも閉じられるように修正) -->
+    <div id="success-modal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-xs flex items-center justify-center z-50 p-4" onclick="closeModalOnOut(event)">
+        <div class="bg-white rounded-3xl p-6 md:p-8 max-w-sm w-full text-center shadow-2xl border border-yellow-100 relative overflow-hidden" id="modal-content" onclick="event.stopPropagation()">
+            <!-- キラキラエフェクト -->
+            <div class="absolute top-4 left-4 text-xl animate-bounce">✨</div>
+            <div class="absolute top-10 right-8 text-xl animate-bounce delay-100">✨</div>
+            <div class="absolute bottom-10 left-8 text-lg animate-bounce delay-200">✨</div>
+
+            <!-- スタンプ本体 -->
+            <div class="w-24 h-24 bg-gradient-to-tr from-amber-100 to-yellow-200 rounded-full flex items-center justify-center mx-auto mb-4 border-4 border-yellow-400 shadow-inner">
+                <span id="modal-stamp-emoji" class="text-5xl">🌸</span>
+            </div>
+            
+            <h4 class="text-xl font-black text-gray-800 tracking-wide" id="modal-title">素晴らしい！</h4>
+            <p class="text-sm font-bold text-blue-600 mt-1" id="modal-achievement">1時間 完了スタンプ獲得！</p>
+            
+            <div class="bg-gray-50 rounded-2xl p-4 my-4 border border-gray-100 text-xs md:text-sm text-gray-600 italic leading-relaxed" id="modal-teacher-msg">
+                「よく頑張りましたね！小さな積み重ねが確実な合格を引き寄せます！」
+            </div>
+
+            <button onclick="closeModal()" class="w-full bg-[#1B365D] hover:bg-blue-900 text-white font-bold py-3 rounded-xl shadow-md transition-all cursor-pointer">
+                明日もがんばる！
+            </button>
+        </div>
+    </div>
+
     <script>
-        const teacherReplies = [
-            "素晴らしい！その1時間の積み重ねが、8月21日の合格に直結していますよ！",
-            "参考書の通読は完璧を目指さなくて大丈夫。「ふーん」くらいの気持ちでサクサクめくっていきましょう！",
-            "お疲れ様です！大画面で計画を見ながら進めると、頭もスッキリ整理されますね。その調子です！",
-            "進んでいますね！ITパスポートは略語が多いので、ノートの端にでもメモしておくと後で楽になりますよ！",
-            "ナイスファイト！今日やった自分をたくさん褒めてあげてください。明日も応援しています！"
+        // 目標時間
+        const TOTAL_HOURS = 75;
+        let currentHours = 0;
+
+        // 受験カウントダウンの計算
+        function updateCountdown() {
+            const examDate = new Date("2026-08-21T00:00:00");
+            const currentDate = new Date("2026-06-24T13:01:00"); // ユーザー提示の現在時刻に設定
+            
+            const timeDiff = examDate - currentDate;
+            const daysDiff = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
+            
+            const countdownEl = document.getElementById("countdown-days");
+            if (countdownEl) {
+                countdownEl.innerText = daysDiff > 0 ? daysDiff : 0;
+            }
+        }
+
+        // 先生のランダム応援メッセージ集
+        const teacherCompliments = [
+            "よく頑張りましたね！その日の1時間が、将来のあなたを強力に支えてくれますよ！",
+            "素晴らしい集中力です！参考書をしっかり読み込むことが、次の過去問期への最強の土台になります。",
+            "お疲れ様です！『1日1時間』の習慣を継続できていること自体が、最高に価値のあるスキルです！",
+            "ナイス学習！カタカナ略語が多いですが、今は『そういう言葉があるんだな』と眺めるだけで十分優秀です。",
+            "お見事！今日の一歩は小さく見えても、確実に合格点へと近づいていますよ。ゆっくり休んでくださいね。"
         ];
 
+        // 各マイルストーン達成時のバッジスタンプと称号
+        const milestones = {
+            1: { emoji: "🌱", title: "最初の一歩バッジ！", msg: "まずは最初の一歩！この調子でITパスポートの森を進んでいきましょう！" },
+            5: { emoji: "🔥", title: "習慣スタートバッジ！", msg: "5時間達成！勉強の習慣がばっちり身についてきています。素晴らしい！" },
+            15: { emoji: "📚", title: "インプット完了バッジ！", msg: "15時間達成！これで全体像が見えてきましたね。いよいよ自信がついてきました！" },
+            40: { emoji: "⚡", title: "過去問マスターバッジ！", msg: "40時間達成！半分以上を超えました！過去問への対応力もグングンついています！" },
+            75: { emoji: "👑", title: "合格圏内マスターバッジ！", msg: "ついに75時間達成！もう本番形式の得点率はバッチリですね。自信を持って本番に臨んでください！" }
+        };
+
+        // アプリ起動時の初期処理
+        window.onload = function() {
+            updateCountdown();
+            updateUI();
+        };
+
+        // UI全体の更新処理
+        function updateUI() {
+            const studyHoursEl = document.getElementById("study-hours");
+            if (studyHoursEl) {
+                studyHoursEl.innerText = currentHours;
+            }
+
+            const progressPercent = Math.min(Math.round((currentHours / TOTAL_HOURS) * 100), 100);
+            
+            const progressPercentEl = document.getElementById("progress-percent");
+            if (progressPercentEl) {
+                progressPercentEl.innerText = progressPercent + "%";
+            }
+
+            const progressBarEl = document.getElementById("progress-bar");
+            if (progressBarEl) {
+                progressBarEl.style.width = progressPercent + "%";
+            }
+
+            // 次のバッジまでの残り時間計算
+            const badgeMilestones = [1, 5, 15, 40, 75];
+            let nextBadgeHours = 75;
+            for (let m of badgeMilestones) {
+                if (currentHours < m) {
+                    nextBadgeHours = m - currentHours;
+                    break;
+                }
+            }
+
+            const hoursToNextBadgeEl = document.getElementById("hours-to-next-badge");
+            if (hoursToNextBadgeEl) {
+                hoursToNextBadgeEl.innerText = nextBadgeHours;
+            }
+
+            // バッジのアンロック（色付け）
+            badgeMilestones.forEach(m => {
+                const element = document.getElementById("badge-" + m);
+                if (element) {
+                    if (currentHours >= m) {
+                        element.classList.remove("grayscale", "opacity-50", "bg-gray-50/50");
+                        element.classList.add("bg-gradient-to-b", "from-yellow-50", "to-amber-100/50", "border-yellow-200", "scale-105");
+                    } else {
+                        element.classList.add("grayscale", "opacity-50", "bg-gray-50/50");
+                        element.classList.remove("bg-gradient-to-b", "from-yellow-50", "to-amber-100/50", "border-yellow-200", "scale-105");
+                    }
+                }
+            });
+        }
+
+        // 今日の勉強（1時間）完了処理
+        function completeStudyHour() {
+            if (currentHours >= TOTAL_HOURS) {
+                const chatBox = document.getElementById('chat-box');
+                if (chatBox) {
+                    const systemMsgHtml = `
+                        <div class="flex items-start gap-2 justify-center my-2">
+                            <div class="bg-yellow-100 text-yellow-800 text-xs px-3 py-1.5 rounded-full font-bold shadow-xs">
+                                🎯 目標の75時間をクリアしています！素晴らしい仕上がりです！
+                            </div>
+                        </div>
+                    `;
+                    chatBox.insertAdjacentHTML('beforeend', systemMsgHtml);
+                    chatBox.scrollTop = chatBox.scrollHeight;
+                }
+                return;
+            }
+
+            currentHours += 1;
+            updateUI();
+
+            // 1. ポップアップスタンプの表示
+            showSuccessStamp();
+
+            // 2. チャットに自分の報告を自動投稿
+            const chatBox = document.getElementById('chat-box');
+            if (chatBox) {
+                const userMsgHtml = `
+                    <div class="flex items-start gap-2 justify-end">
+                        <div class="bg-blue-500 text-white p-3 rounded-l-2xl rounded-br-2xl shadow-xs max-w-[80%] text-left">
+                            今日の勉強（1時間）を完了しました！累計学習時間は 【${currentHours}時間】 です！🌸
+                        </div>
+                        <div class="w-8 h-8 rounded-full bg-green-600 text-white flex items-center justify-center font-bold text-xs shrink-0 shadow-sm">生徒</div>
+                    </div>
+                `;
+                chatBox.insertAdjacentHTML('beforeend', userMsgHtml);
+                chatBox.scrollTop = chatBox.scrollHeight;
+            }
+
+            // 3. 1秒後に先生からの激励返信
+            setTimeout(() => {
+                let textReply = "";
+                
+                // バッジ獲得時と通常時の分岐
+                if (milestones[currentHours]) {
+                    const badge = milestones[currentHours];
+                    textReply = `🎉すごいです！！【${badge.title}（${badge.emoji}）】をアンロックしましたよ！<br>${badge.msg}`;
+                } else {
+                    textReply = teacherCompliments[Math.floor(Math.random() * teacherCompliments.length)];
+                }
+
+                if (chatBox) {
+                    const teacherMsgHtml = `
+                        <div class="flex items-start gap-2">
+                            <div class="w-8 h-8 rounded-full bg-blue-950 text-white flex items-center justify-center font-bold text-xs shrink-0 shadow-sm">先生</div>
+                            <div class="bg-white p-3 rounded-r-2xl rounded-bl-2xl shadow-xs max-w-[80%] text-gray-700 leading-relaxed">
+                                ${textReply}
+                            </div>
+                        </div>
+                    `;
+                    chatBox.insertAdjacentHTML('beforeend', teacherMsgHtml);
+                    chatBox.scrollTop = chatBox.scrollHeight;
+                }
+            }, 1000);
+        }
+
+        // ポップアップスタンプを表示する
+        function showSuccessStamp() {
+            const modal = document.getElementById("success-modal");
+            const modalContent = document.getElementById("modal-content");
+            const modalStampEmoji = document.getElementById("modal-stamp-emoji");
+            const modalTitle = document.getElementById("modal-title");
+            const modalAchievement = document.getElementById("modal-achievement");
+            const modalTeacherMsg = document.getElementById("modal-teacher-msg");
+
+            if (!modal || !modalContent) return;
+
+            // マイルストーン達成かどうかで表示内容を変更
+            if (milestones[currentHours]) {
+                const milestone = milestones[currentHours];
+                if (modalStampEmoji) modalStampEmoji.innerText = milestone.emoji;
+                if (modalTitle) modalTitle.innerText = "称号バッジ獲得！";
+                if (modalAchievement) modalAchievement.innerText = milestone.title;
+                if (modalTeacherMsg) modalTeacherMsg.innerText = milestone.msg;
+            } else {
+                if (modalStampEmoji) modalStampEmoji.innerText = "🌸";
+                if (modalTitle) modalTitle.innerText = "素晴らしい！";
+                if (modalAchievement) modalAchievement.innerText = "勉強完了スタンプ を押しました！";
+                if (modalTeacherMsg) modalTeacherMsg.innerText = "「今日もお疲れ様でした！この小さな1時間の積み重ねが、8月21日の笑顔に繋がります！」";
+            }
+
+            modal.classList.remove("hidden");
+            modalContent.classList.remove("animate-pop-in");
+            void modalContent.offsetWidth; // リフローを発生させてアニメーションを強制リセット
+            modalContent.classList.add("animate-pop-in");
+        }
+
+        // モーダルを閉じる
+        function closeModal() {
+            const modal = document.getElementById("success-modal");
+            if (modal) {
+                modal.classList.add("hidden");
+            }
+        }
+
+        // モーダルの外側（暗い背景部分）をクリックしても閉じられるようにするセーフティネット
+        function closeModalOnOut(event) {
+            if (event.target === document.getElementById("success-modal")) {
+                closeModal();
+            }
+        }
+
+        // 自由入力のチャット送信処理
         function sendMessage() {
             const inputField = document.getElementById('user-input');
+            if (!inputField) return;
+            
             const userText = inputField.value.trim();
             if (!userText) return;
 
             const chatBox = document.getElementById('chat-box');
+            if (!chatBox) return;
 
             const userMsgHtml = `
                 <div class="flex items-start gap-2 justify-end">
-                    <div class="bg-blue-500 text-white p-2.5 rounded-l-xl rounded-br-xl shadow-xs max-w-[80%] text-left">
+                    <div class="bg-blue-500 text-white p-3 rounded-l-2xl rounded-br-2xl shadow-xs max-w-[80%] text-left">
                         ${userText}
                     </div>
-                    <div class="w-8 h-8 rounded-full bg-green-600 text-white flex items-center justify-center font-bold text-xs shrink-0">生徒</div>
+                    <div class="w-8 h-8 rounded-full bg-green-600 text-white flex items-center justify-center font-bold text-xs shrink-0 shadow-sm">生徒</div>
                 </div>
             `;
             chatBox.insertAdjacentHTML('beforeend', userMsgHtml);
             inputField.value = '';
             chatBox.scrollTop = chatBox.scrollHeight;
 
+            // 1秒後に先生が質問への回答アドバイスを行う
             setTimeout(() => {
-                const randomReply = teacherReplies[Math.floor(Math.random() * teacherReplies.length)];
-                
+                const randomReply = teacherCompliments[Math.floor(Math.random() * teacherCompliments.length)];
                 const teacherMsgHtml = `
                     <div class="flex items-start gap-2">
-                        <div class="w-8 h-8 rounded-full bg-blue-900 text-white flex items-center justify-center font-bold text-xs shrink-0">先生</div>
-                        <div class="bg-white p-2.5 rounded-r-xl rounded-bl-xl shadow-xs max-w-[80%]">
-                            ${randomReply}
+                        <div class="w-8 h-8 rounded-full bg-blue-950 text-white flex items-center justify-center font-bold text-xs shrink-0 shadow-sm">先生</div>
+                        <div class="bg-white p-3 rounded-r-2xl rounded-bl-2xl shadow-xs max-w-[80%] text-gray-700 leading-relaxed">
+                            質問や進捗報告ありがとうございます！${randomReply}
                         </div>
                     </div>
                 `;
@@ -131,12 +461,6 @@
                 chatBox.scrollTop = chatBox.scrollHeight;
             }, 1000);
         }
-
-        document.getElementById('user-input').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                sendMessage();
-            }
-        });
     </script>
 </body>
 </html>
