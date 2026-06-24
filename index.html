@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ITパスポート 合格ナビ2026</title>
-    <!-- Tailwind CSS -->
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <style>
         body {
@@ -15,88 +14,85 @@
 </head>
 <body class="pb-12 text-gray-800">
 
-    <!-- ヘッダー (受験日を8月21日に修正) -->
     <header class="bg-[#1B365D] text-white text-center py-6 px-4 shadow-md sticky top-0 z-50">
-        <h1 class="text-xl font-bold tracking-wider">ITパスポート 合格ナビ</h1>
-        <p class="text-xs text-blue-200 mt-1">2026年8月21日(金) 受験応援システム</p>
+        <h1 class="text-xl md:text-2xl font-bold tracking-wider">ITパスポート 合格ナビ</h1>
+        <p class="text-xs md:text-sm text-blue-200 mt-1">2026年8月21日(金) 受験応援システム</p>
     </header>
 
-    <main class="max-w-md mx-auto px-4 mt-6 space-y-6">
+    <main class="max-w-6xl mx-auto px-4 mt-6 grid grid-cols-1 md:grid-cols-3 gap-6">
 
-        <!-- 現在のステータスカード -->
-        <div class="bg-white rounded-2xl p-5 shadow-sm border border-blue-100">
-            <div class="flex items-center justify-between">
-                <span class="bg-green-100 text-green-800 text-xs font-bold px-3 py-1 rounded-full">現在実行中</span>
-                <span class="text-xs text-gray-500">試験まであと約2ヶ月</span>
-            </div>
-            <h2 class="text-lg font-bold mt-2 text-[#1B365D]">【第1期】インプット期</h2>
-            <p class="text-xs text-gray-500 mb-3">期間: 6月8日 〜 7月5日</p>
-            <div class="bg-blue-50 p-3 rounded-xl text-sm text-blue-900 border-l-4 border-blue-500">
-                <strong>今週のミッション：</strong><br>
-                わからない用語があっても立ち止まらず、参考書をザクザク読み進めよう！
-            </div>
-        </div>
-
-        <!-- スケジュールタイムライン (第3期の終了日を8/20に修正) -->
-        <div class="bg-white rounded-2xl p-5 shadow-sm">
-            <h3 class="font-bold text-base mb-4 flex items-center text-[#1B365D]">
-                📅 全体スケジュール
-            </h3>
-            <div class="space-y-6 relative before:absolute before:inset-0 before:left-3.5 before:bg-blue-100 before:w-0.5 h-auto">
-                
-                <!-- 第1期 -->
-                <div class="relative pl-8">
-                    <div class="absolute left-1 top-1 w-5 h-5 bg-blue-600 rounded-full border-4 border-white shadow"></div>
-                    <h4 class="font-bold text-sm text-blue-600">第1期：インプット（6/8〜7/5）</h4>
-                    <p class="text-xs text-gray-600 mt-1">参考書の通読・全体像の把握。まずは1冊最後まで読み切る！</p>
-                </div>
-
-                <!-- 第2期 -->
-                <div class="relative pl-8">
-                    <div class="absolute left-1 top-1 w-5 h-5 bg-gray-300 rounded-full border-4 border-white shadow"></div>
-                    <h4 class="font-bold text-sm text-gray-700">第2期：アウトプット（7/6〜8/2）</h4>
-                    <p class="text-xs text-gray-500 mt-1">分野別過去問演習。過去問道場をフル活用して弱点をあぶり出す。</p>
-                </div>
-
-                <!-- 第3期 (8/20までに変更) -->
-                <div class="relative pl-8">
-                    <div class="absolute left-1 top-1 w-5 h-5 bg-gray-300 rounded-full border-4 border-white shadow"></div>
-                    <h4 class="font-bold text-sm text-gray-700">第3期：総仕上げ（8/3〜8/20）</h4>
-                    <p class="text-xs text-gray-500 mt-1">本番形式の模擬試験＆CBT疑似ソフト体験。試験前日はしっかり休みましょう！</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- 先生と交換日記 -->
-        <div class="bg-white rounded-2xl p-5 shadow-sm flex flex-col h-[400px]">
-            <h3 class="font-bold text-base mb-2 flex items-center text-[#1B365D]">
-                💬 先生とLINE風こうかん日記
-            </h3>
-            <p class="text-[11px] text-gray-400 mb-3">今日の勉強報告や、不安なことを呟くと先生が励ましてくれます！</p>
+        <div class="grid grid-cols-1 gap-6 md:col-span-2">
             
-            <div id="chat-box" class="flex-1 overflow-y-auto space-y-3 p-2 bg-gray-50 rounded-xl text-xs">
-                <div class="flex items-start gap-2">
-                    <div class="w-8 h-8 rounded-full bg-blue-900 text-white flex items-center justify-center font-bold text-xs shrink-0">先生</div>
-                    <div class="bg-white p-2.5 rounded-r-xl rounded-bl-xl shadow-xs max-w-[80%]">
-                        お疲れ様です！受験日が8月21日に決まりましたね。目標が明確になるとやる気も上がります。参考書の読み込み、応援しています！
+            <div class="bg-white rounded-2xl p-6 shadow-sm border border-blue-100 transition-all hover:shadow-md">
+                <div class="flex items-center justify-between">
+                    <span class="bg-green-100 text-green-800 text-xs md:text-sm font-bold px-3 py-1 rounded-full">現在実行中</span>
+                    <span class="text-xs md:text-sm text-gray-500">試験まであと約2ヶ月</span>
+                </div>
+                <h2 class="text-lg md:text-xl font-bold mt-2 text-[#1B365D]">【第1期】インプット期</h2>
+                <p class="text-xs md:text-sm text-gray-500 mb-3">期間: 6月8日 〜 7月5日</p>
+                <div class="bg-blue-50 p-4 rounded-xl text-sm md:text-base text-blue-900 border-l-4 border-blue-500">
+                    <strong>今週のミッション：</strong><br>
+                    わからない用語があっても立ち止まらず、参考書をザクザク読み進めよう！
+                </div>
+            </div>
+
+            <div class="bg-white rounded-2xl p-6 shadow-sm transition-all hover:shadow-md">
+                <h3 class="font-bold text-base md:text-lg mb-4 flex items-center text-[#1B365D]">
+                    📅 全体スケジュール
+                </h3>
+                <div class="space-y-6 relative before:absolute before:inset-0 before:left-3.5 before:bg-blue-100 before:w-0.5 h-auto">
+                    
+                    <div class="relative pl-8">
+                        <div class="absolute left-1 top-1 w-5 h-5 bg-blue-600 rounded-full border-4 border-white shadow"></div>
+                        <h4 class="font-bold text-sm md:text-base text-blue-600">第1期：インプット（6/8〜7/5）</h4>
+                        <p class="text-xs md:text-sm text-gray-600 mt-1">参考書の通読・全体像の把握。まずは1冊最後まで読み切る！</p>
+                    </div>
+
+                    <div class="relative pl-8">
+                        <div class="absolute left-1 top-1 w-5 h-5 bg-gray-300 rounded-full border-4 border-white shadow"></div>
+                        <h4 class="font-bold text-sm md:text-base text-gray-700">第2期：アウトプット（7/6〜8/2）</h4>
+                        <p class="text-xs md:text-sm text-gray-500 mt-1">分野別過去問演習。過去問道場をフル活用して弱点をあぶり出す。</p>
+                    </div>
+
+                    <div class="relative pl-8">
+                        <div class="absolute left-1 top-1 w-5 h-5 bg-gray-300 rounded-full border-4 border-white shadow"></div>
+                        <h4 class="font-bold text-sm md:text-base text-gray-700">第3期：総仕上げ（8/3〜8/20）</h4>
+                        <p class="text-xs md:text-sm text-gray-500 mt-1">本番形式の模擬試験＆CBT疑似ソフト体験。試験前日はしっかり休みましょう！</p>
                     </div>
                 </div>
             </div>
+        </div>
 
-            <div class="mt-3 flex gap-2">
-                <input type="text" id="user-input" placeholder="例: 1時間読みました！ / 眠いです…" class="flex-1 border border-gray-300 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-blue-500">
-                <button onclick="sendMessage()" class="bg-[#4682B4] text-white px-4 py-2 rounded-xl font-bold text-xs hover:bg-blue-700 transition">送信</button>
+        <div class="md:col-span-1">
+            <div class="bg-white rounded-2xl p-5 shadow-sm flex flex-col h-[450px] md:h-[550px] md:sticky md:top-24 transition-all hover:shadow-md">
+                <h3 class="font-bold text-base md:text-lg mb-2 flex items-center text-[#1B365D]">
+                    💬 先生とLINE風こうかん日記
+                </h3>
+                <p class="text-[11px] md:text-xs text-gray-400 mb-3">今日の勉強報告や、不安なことを呟くと先生が励ましてくれます！</p>
+                
+                <div id="chat-box" class="flex-1 overflow-y-auto space-y-3 p-3 bg-gray-50 rounded-xl text-xs md:text-sm">
+                    <div class="flex items-start gap-2">
+                        <div class="w-8 h-8 rounded-full bg-blue-900 text-white flex items-center justify-center font-bold text-xs shrink-0">先生</div>
+                        <div class="bg-white p-2.5 rounded-r-xl rounded-bl-xl shadow-xs max-w-[80%]">
+                            お疲れ様です！PCの大画面なら、よりスケジュールが見やすくなりましたね。参考書の読み込みはどこまで進みましたか？気軽に教えてくださいね！
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-3 flex gap-2">
+                    <input type="text" id="user-input" placeholder="例: ストラテジ系読み終わりました！" class="flex-1 border border-gray-300 rounded-xl px-3 py-2 text-xs md:text-sm focus:outline-none focus:border-blue-500">
+                    <button onclick="sendMessage()" class="bg-[#4682B4] text-white px-4 py-2 rounded-xl font-bold text-xs md:text-sm hover:bg-blue-700 transition shrink-0">送信</button>
+                </div>
             </div>
         </div>
 
     </main>
 
     <script>
-        // 先生からの自動返答パターン (日付を8月21日に修正)
         const teacherReplies = [
             "素晴らしい！その1時間の積み重ねが、8月21日の合格に直結していますよ！",
             "参考書の通読は完璧を目指さなくて大丈夫。「ふーん」くらいの気持ちでサクサクめくっていきましょう！",
-            "お疲れ様です！受験日が1日早まっても、これまでのペースを維持すれば全く問題ありませんよ。",
+            "お疲れ様です！大画面で計画を見ながら進めると、頭もスッキリ整理されますね。その調子です！",
             "進んでいますね！ITパスポートは略語が多いので、ノートの端にでもメモしておくと後で楽になりますよ！",
             "ナイスファイト！今日やった自分をたくさん褒めてあげてください。明日も応援しています！"
         ];
